@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Function to get UTM parameters from the URL
     function getUTMParams() {
         var params = {};
         window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(str, key, value) {
@@ -15,13 +14,13 @@ document.addEventListener('DOMContentLoaded', function () {
         .map(key => `${key}=${utmParams[key]}`)
         .join('&');
 
-    // If there are UTM parameters present, append them to all internal links
     if (utmString) {
         var links = document.querySelectorAll('a');
         links.forEach(link => {
-            var isInternalLink = link.href && link.hostname === window.location.hostname;
-            if (isInternalLink && !link.href.includes('#')) { // Exclude anchor links
-                link.href += (link.href.includes('?') ? '&' : '?') + utmString;
+            var url = new URL(link.href, window.location.origin);
+            var isInternalLink = url.hostname === window.location.hostname;
+            if (!url.href.includes('#')) { // Continue to exclude anchor links
+                link.href += (url.href.includes('?') ? '&' : '?') + utmString;
             }
         });
     }
